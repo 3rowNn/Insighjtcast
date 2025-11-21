@@ -9,7 +9,7 @@ import {
     sendMassNotification,
     sendTargetedNotification
 } from '../controllers/adminController.js';
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import { protect, isAdmin } from '../middleware/authmiddleware.js';
 
 const router = express.Router();
 
