@@ -21,21 +21,14 @@ connectDB();
 // 4. สร้าง instance ของ Express
 const app = express();
 
-// --- 'allowedOrigins' (ต้องอยู่ก่อน 'app.use(cors)') ---
-const allowedOrigins = [
-  'http://localhost:3000',
-];
-
-// 5. 🛠️ FIX: ย้าย 'cors' มาไว้ "บนสุด" (ก่อน 'uploads')
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
+    origin: [
+        "http://localhost:3000",              // อนุญาตเครื่องตัวเอง (ตอนพัฒนา)
+        "https://insighjtcast.vercel.app"     // 👈 อนุญาตเว็บ Vercel ของคุณ (ต้องตรงเป๊ะ ห้ามมี / ปิดท้าย)
+    ],
+    credentials: true, // อนุญาตให้ส่ง Token/Cookies ข้ามโดเมนได้
+    methods: ["GET", "POST", "PUT", "DELETE"], // อนุญาต Method ที่ใช้
+    allowedHeaders: ["Content-Type", "Authorization"] // อนุญาต Header ที่จำเป็น
 }));
 
 // --- เพิ่ม limit (50mb) (เหมือนเดิม) ---
