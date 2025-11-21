@@ -6,8 +6,8 @@ import 'react-quill/dist/quill.snow.css';
 
 // สร้าง Component แบบ Dynamic (ปิด SSR)
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
-const API_URL_PODCASTS = 'http://localhost:5000/api/podcasts';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL_PODCASTS = `${BASE_URL}/api/podcasts`;
 const MAX_CHARS = 1500; //  LIMIT: กำหนดลิมิตตัวอักษร
 
 export default function EditEpisodePage() {

@@ -4,7 +4,7 @@ import {
     deletePodcast, getDeletedPodcasts, restorePodcast, forceDeletePodcast,
     createComment, deleteComment, likePodcast, reportPodcast, getCommentsByPodcast
 } from '../controllers/podcastController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authmiddleware.js';
 
 const router = express.Router();
 

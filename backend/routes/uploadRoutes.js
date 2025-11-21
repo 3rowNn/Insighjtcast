@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authmiddleware.js';
 
 const router = express.Router();
 
@@ -37,9 +37,12 @@ const upload = multer({
 // Route POST /api/upload
 router.post('/', protect, upload.single('image'), (req, res) => {
   if (req.file) {
+    // สร้าง Base URL อัตโนมัติตาม Server ที่รันอยู่
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    
     res.json({
       message: 'Image uploaded successfully',
-      url: `http://localhost:5000/uploads/${req.file.filename}`
+      url: `${baseUrl}/uploads/${req.file.filename}` // 👈 ใช้ baseUrl แทน localhost
     });
   } else {
     res.status(400).json({ message: 'No file provided or invalid file type' });

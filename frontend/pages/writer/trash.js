@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
-
-const API_SERIES = 'http://localhost:5000/api/series';
-const API_PODCASTS = 'http://localhost:5000/api/podcasts';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_SERIES = `${BASE_URL}/api/series`;
+const API_PODCASTS = `${BASE_URL}/api/podcasts`;
 
 export default function TrashPage() {
     const [deletedSeries, setDeletedSeries] = useState([]);

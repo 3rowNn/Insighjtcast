@@ -4,8 +4,10 @@ import Layout from '../components/Layout'
 import Link from 'next/link'
 
 // 1. API URLs
-const API_URL_PUBLIC = 'http://localhost:5000/api/series/public'
-const API_URL_PROTECTED = 'http://localhost:5000/api/series'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+const API_URL_PUBLIC = `${BASE_URL}/api/series/public`;
+const API_URL_PROTECTED = `${BASE_URL}/api/series`;
 
 // 💥 NEW: กำหนดหมวดหมู่และลำดับที่จะแสดง
 const CATEGORIES = ['Tech', 'Life', 'News', 'Story', 'Other'];

@@ -4,7 +4,9 @@ import Layout from '../components/Layout'
 import Link from 'next/link'
 
 // 1. 🛠️ FIX: URL ต้องชี้ไปที่ Public Series API (สำหรับระบบเลื่อนอ่าน)
-const API_URL_PUBLIC = 'http://localhost:5000/api/series/public'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+const API_URL_PUBLIC = `${BASE_URL}/api/series/public`;
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

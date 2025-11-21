@@ -6,8 +6,8 @@ import 'react-quill/dist/quill.snow.css'
 
 // 1. Import ReactQuill แบบ Dynamic (ปิด SSR)
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
-
-const API_URL = 'http://localhost:5000/api/podcasts'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = `${BASE_URL}/api/podcasts`;
 const MAX_CHARS = 1500; // 💥 LIMIT: กำหนดลิมิตตัวอักษร
 
 

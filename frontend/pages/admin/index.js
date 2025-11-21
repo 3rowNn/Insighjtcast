@@ -42,7 +42,9 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 // ==========================================
 // 2. Layout Component
 // ==========================================
-const API_URL_NOTIFICATIONS = 'http://localhost:5000/api/notifications';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+const API_URL_NOTIFICATIONS = `${BASE_URL}/api/notifications`;
 
 const Layout = ({ children, wide = false }) => {
     const [userRole, setUserRole] = useState(null);
@@ -182,10 +184,10 @@ function decodeJwt(token) {
     } catch (e) { return null; }
 }
 
-const API_URL_SERIES_PUBLIC = 'http://localhost:5000/api/series/public'
-const API_URL_ADMIN = 'http://localhost:5000/api/admin'
-const API_URL_SERIES = 'http://localhost:5000/api/series'
-const API_PODCASTS = 'http://localhost:5000/api/podcasts'
+const API_URL_SERIES_PUBLIC = `${BASE_URL}/api/series/public`
+const API_URL_ADMIN = `${BASE_URL}/api/admin`
+const API_URL_SERIES = `${BASE_URL}/api/series`
+const API_PODCASTS = `${BASE_URL}/api/podcasts`
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState('users');

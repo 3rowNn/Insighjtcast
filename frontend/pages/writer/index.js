@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../components/Layout' // ตรวจสอบ path ให้ตรงกับ project ของคุณ
-
-const API_URL = 'http://localhost:5000/api/series'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = `${BASE_URL}/api/series`;
 
 export default function WriterDashboard() {
     const [list, setList] = useState([])

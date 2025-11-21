@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import Layout from '../../../components/Layout';
 
 // URL ของ API ที่ใช้ดึงข้อมูล Series (GET /api/series/:id)
-const API_URL = 'http://localhost:5000/api/series';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = `${BASE_URL}/api/series`;
 
 // หมวดหมู่ (ต้องตรงกับ NewSeriesPage)
 const categories = ['Tech', 'Life', 'News', 'Story', 'Other'];

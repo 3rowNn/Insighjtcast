@@ -22,10 +22,10 @@ function decodeJwt(token) {
     return null;
   }
 }
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 // 2. API URL
-const API_URL_EPISODES = 'http://localhost:5000/api/podcasts';
-const API_URL_SERIES = 'http://localhost:5000/api/series';
+const API_URL_EPISODES = `${BASE_URL}/api/podcasts`;
+const API_URL_SERIES = `${BASE_URL}/api/series`;
 
 export default function PlayPage() {
   const router = useRouter()

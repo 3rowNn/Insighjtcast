@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/Layout'; // (เราจะใช้ Layout เดิม)
 
 // 1. 📍 URL ของ API (ชี้ไปที่ API 'Series' ที่เราสร้าง)
-const API_URL = 'http://localhost:5000/api/series';
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = `${BASE_URL}/api/series`;
 // 2. 📍 หมวดหมู่ (ต้องตรงกับ Backend 'enum')
 const categories = ['Tech', 'Life', 'News', 'Story', 'Other'];
 

@@ -4,7 +4,9 @@ import Layout from '../components/Layout';
 import Link from 'next/link';
 
 // 1. 📍 URL ของ Backend API (Port 5000)
-const API_URL = 'http://localhost:5000/api/auth/login';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+const API_URL = `${BASE_URL}/api/auth/login`;
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

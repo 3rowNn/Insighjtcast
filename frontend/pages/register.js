@@ -4,7 +4,8 @@ import Layout from '../components/Layout';
 import Link from 'next/link';
 
 // 1. 📍 URL ของ Backend API (Port 5000)
-const API_URL = 'http://localhost:5000/api/auth/register';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = `${BASE_URL}/api/auth/register`;
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
