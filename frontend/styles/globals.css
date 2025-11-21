@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* custom */
+body { @apply bg-gray-900 text-gray-100; }
+.card { @apply bg-gray-800 rounded-lg p-6 shadow-md; }
+.btn-primary { @apply bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90; }
+.btn-ghost { @apply border border-gray-700 px-4 py-2 rounded-lg text-gray-200 hover:bg-gray-800; }
