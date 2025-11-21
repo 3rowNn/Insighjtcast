@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-const API_URL_NOTIFICATIONS = 'http://localhost:5000/api/notifications';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL_NOTIFICATIONS = `${BASE_URL}/api/notifications`;
+
 
 export default function Layout({ children, wide = false }) {
   const [userRole, setUserRole] = useState(null);
