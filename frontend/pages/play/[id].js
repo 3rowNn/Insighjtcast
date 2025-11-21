@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Layout from '../../components/Layout' 
-import Link from 'next/link' 
+import Layout from '../../components/Layout'
+import Link from 'next/link'
 
 // 1. ฟังก์ชันถอดรหัส JWT (Token)
 function decodeJwt(token) {
@@ -11,7 +11,7 @@ function decodeJwt(token) {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map(function(c) {
+        .map(function (c) {
           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         })
         .join('')
@@ -22,41 +22,41 @@ function decodeJwt(token) {
     return null;
   }
 }
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 // 2. API URL
-const API_URL_EPISODES = 'http://localhost:5000/api/podcasts';
-const API_URL_SERIES = 'http://localhost:5000/api/series';
+const API_URL_EPISODES = `${BASE_URL}/api/podcasts`;
+const API_URL_SERIES = `${BASE_URL}/api/series`;
 
 export default function PlayPage() {
   const router = useRouter()
   const { id } = router.query // SERIES_ID
-  
-  const [seriesData, setSeriesData] = useState(null); 
-  const [episodesData, setEpisodesData] = useState([]); 
-  const [isLoading, setIsLoading] = useState(true); 
+
+  const [seriesData, setSeriesData] = useState(null);
+  const [episodesData, setEpisodesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Report Modal States
   const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState('Inappropriate'); 
-  const [reportDetails, setReportDetails] = useState(''); 
-  const [reportMessage, setReportMessage] = useState(''); 
+  const [reportReason, setReportReason] = useState('Inappropriate');
+  const [reportDetails, setReportDetails] = useState('');
+  const [reportMessage, setReportMessage] = useState('');
   const [reportingEpisodeId, setReportingEpisodeId] = useState(null);
-  
-  // แยกช่องใส่ชื่อเรื่อง และ ชื่อตอน
-  const [reportSeriesInput, setReportSeriesInput] = useState(''); 
-  const [reportEpisodeInput, setReportEpisodeInput] = useState(''); 
-  const [reportAuthorInput, setReportAuthorInput] = useState(''); 
-  
+
+  // 💥 NEW: แยกช่องใส่ชื่อเรื่อง และ ชื่อตอน
+  const [reportSeriesInput, setReportSeriesInput] = useState('');
+  const [reportEpisodeInput, setReportEpisodeInput] = useState('');
+  const [reportAuthorInput, setReportAuthorInput] = useState('');
+
   // Comment States
-  const [episodeComments, setEpisodeComments] = useState({}); 
+  const [episodeComments, setEpisodeComments] = useState({});
   const [seriesComments, setSeriesComments] = useState([]);
-  const [newSeriesComment, setNewSeriesComment] = useState(""); 
-  
-  const [currentUser, setCurrentUser] = useState(null); 
+  const [newSeriesComment, setNewSeriesComment] = useState("");
+
+  const [currentUser, setCurrentUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (!id) return 
+    if (!id) return
 
     const token = localStorage.getItem('token');
     if (token) {
@@ -67,8 +67,8 @@ export default function PlayPage() {
       setIsLoggedIn(false);
     }
 
-    setIsLoading(true); 
-    
+    setIsLoading(true);
+
     // ดึงข้อมูล
     fetch(`${API_URL_SERIES}/public/${id}`)
       .then(r => {
@@ -77,13 +77,13 @@ export default function PlayPage() {
       })
       .then(data => {
         if (data && data.seriesData) {
-          setSeriesData(data.seriesData); 
-          setEpisodesData(data.episodesData || []); 
+          setSeriesData(data.seriesData);
+          setEpisodesData(data.episodesData || []);
         }
       })
       .catch(err => console.error('Error loading series:', err))
-      .finally(() => setIsLoading(false)); 
-      
+      .finally(() => setIsLoading(false));
+
     // ดึงคอมเมนต์
     fetch(`${API_URL_SERIES}/public/${id}/comments`)
       .then(r => r.json())
@@ -97,23 +97,24 @@ export default function PlayPage() {
   // ฟังก์ชัน "ส่ง Report"
   const handleReportSubmit = async (e) => {
     e.preventDefault();
-    if (!reportingEpisodeId) return; 
+    if (!reportingEpisodeId) return;
 
-    // VALIDATION
+    // 💥 VALIDATION: ตรวจสอบข้อมูลครบถ้วน
     if (!reportSeriesInput.trim() || !reportEpisodeInput.trim() || !reportAuthorInput.trim()) {
-        alert("กรุณาระบุ 'ชื่อเรื่อง', 'ชื่อตอน' และ 'ชื่อผู้เขียน' ให้ครบถ้วน");
-        return;
+      alert("กรุณาระบุ 'ชื่อเรื่อง', 'ชื่อตอน' และ 'ชื่อผู้เขียน' ให้ครบถ้วน");
+      return;
     }
 
-    setReportMessage(''); 
+    setReportMessage('');
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
-      router.push('/login'); 
+      router.push('/login');
       return;
     }
 
     try {
+      // รวมข้อมูล Series/Episode/Author เข้าไปใน details
       const fullDetails = `[Series: ${reportSeriesInput}] [Episode: ${reportEpisodeInput}] [Author: ${reportAuthorInput}]\nDetails: ${reportDetails}`;
 
       const res = await fetch(`${API_URL_EPISODES}/${reportingEpisodeId}/report`, {
@@ -126,13 +127,13 @@ export default function PlayPage() {
       });
 
       const data = await res.json();
-      
+
       if (res.ok) {
-        setReportMessage('✅ Report submitted successfully! Admin จะตรวจสอบในไม่ช้า'); 
+        setReportMessage('✅ Report submitted successfully! Admin จะตรวจสอบในไม่ช้า');
         setTimeout(() => {
-          setShowReportModal(false); 
-          setReportingEpisodeId(null); 
-        }, 3000); 
+          setShowReportModal(false);
+          setReportingEpisodeId(null);
+        }, 3000);
       } else {
         setReportMessage(`❌ Error: ${data.message || 'ส่งรายงานไม่สำเร็จ'}`);
       }
@@ -141,32 +142,32 @@ export default function PlayPage() {
     }
   };
 
-  // เปิด Modal พร้อมเติมข้อมูลแยกช่อง
+  // 💥 FIX: เปิด Modal พร้อมเติมข้อมูลแยกช่อง
   const openReportModal = (episodeId, episodeTitle, authorName) => {
     if (!isLoggedIn) {
       router.push('/login');
       return;
     }
     setReportingEpisodeId(episodeId);
-    
+
     // Pre-fill ข้อมูล
     setReportSeriesInput(seriesData?.title || ''); // ใส่ชื่อเรื่องแม่
     setReportEpisodeInput(episodeTitle || '');     // ใส่ชื่อตอน
     setReportAuthorInput(authorName || '');
-    
+
     setShowReportModal(true);
   };
 
   // ฟังก์ชันลบ Episode
   const handleDeleteEpisode = async (episodeId, title) => {
-    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ Episode: "${title}"?`)) return; 
+    if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบ Episode: "${title}"?`)) return;
 
     const token = localStorage.getItem('token');
     if (!token) {
-      router.push('/login'); 
+      router.push('/login');
       return;
     }
-    
+
     try {
       const res = await fetch(`${API_URL_EPISODES}/${episodeId}`, {
         method: 'DELETE',
@@ -189,13 +190,13 @@ export default function PlayPage() {
   const handleSeriesCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newSeriesComment.trim()) return;
-    
+
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
       return;
     }
-    
+
     try {
       const res = await fetch(`${API_URL_SERIES}/${id}/comment`, {
         method: 'POST',
@@ -205,11 +206,11 @@ export default function PlayPage() {
         },
         body: JSON.stringify({ text: newSeriesComment })
       });
-      
+
       if (res.ok) {
         const addedComment = await res.json();
-        setSeriesComments([...seriesComments, addedComment]); 
-        setNewSeriesComment(""); 
+        setSeriesComments([...seriesComments, addedComment]);
+        setNewSeriesComment("");
       } else {
         console.error("Failed to post series comment");
       }
@@ -217,7 +218,7 @@ export default function PlayPage() {
       console.error("Error posting series comment:", err);
     }
   };
-  
+
   // ฟังก์ชันลบ Comment Series
   const handleDeleteSeriesComment = async (commentId) => {
     const token = localStorage.getItem('token');
@@ -225,15 +226,15 @@ export default function PlayPage() {
       router.push('/login');
       return;
     }
-    
+
     try {
       const res = await fetch(`${API_URL_SERIES}/${id}/comment/${commentId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       if (res.ok) {
-        setSeriesComments(seriesComments.filter(c => c._id !== commentId)); 
+        setSeriesComments(seriesComments.filter(c => c._id !== commentId));
       } else {
         const data = await res.json();
         alert(`❌ Error: ${data.message || 'ไม่สามารถลบคอมเมนต์ได้'}`);
@@ -243,7 +244,7 @@ export default function PlayPage() {
     }
   };
 
-  if (isLoading || !seriesData) { 
+  if (isLoading || !seriesData) {
     return (
       <Layout>
         <div className="flex justify-center items-center h-96">
@@ -280,21 +281,21 @@ export default function PlayPage() {
         episodesData.map(ep => {
           const isEpisodeAuthor = currentUser && (currentUser.id === ep.author?._id);
           const isAdmin = currentUser && currentUser.role === 'admin';
-          const canManage = isEpisodeAuthor || isAdmin; 
+          const canManage = isEpisodeAuthor || isAdmin;
           const authorName = ep.author?.username || 'Unknown';
 
           return (
             <div key={ep._id} className="max-w-3xl mx-auto bg-gray-900 p-8 rounded-2xl shadow-lg border border-gray-800 mt-6 relative">
               {canManage && (
                 <div className="absolute top-4 right-4 flex space-x-2">
-                  <button 
+                  <button
                     onClick={() => router.push(`/writer/edit-episode/${ep._id}`)}
                     className="text-xs text-yellow-400 hover:text-white"
                     title="Edit Episode"
                   >
                     ✏️ แก้ไข
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleDeleteEpisode(ep._id, ep.title)}
                     className="text-xs text-red-400 hover:text-white"
                     title="Delete Episode"
@@ -303,9 +304,9 @@ export default function PlayPage() {
                   </button>
                 </div>
               )}
-              
+
               {isLoggedIn && !canManage && (
-                <button 
+                <button
                   onClick={() => openReportModal(ep._id, ep.title, authorName)}
                   className="absolute top-4 right-4 text-xs text-gray-500 hover:text-red-400 transition-colors"
                   title="Report this episode"
@@ -371,17 +372,14 @@ export default function PlayPage() {
           {seriesComments.length > 0 ? (
             seriesComments.map(comment => {
               const canDelete = currentUser && (
-                currentUser.id === (comment.author?._id || null) || 
-                currentUser.role === 'admin' 
+                currentUser.id === (comment.author?._id || null) ||
+                currentUser.role === 'admin'
               );
 
               return (
                 <div key={comment._id} className="flex gap-3">
                   <div className="flex-shrink-0 w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center text-sm font-bold">
-                    {/* 💥 FIX: Safe access for username substring */}
-                    {comment.author && comment.author.username 
-                      ? comment.author.username.substring(0, 1).toUpperCase() 
-                      : '?'}
+                    {comment.author ? comment.author.username.substring(0, 1).toUpperCase() : '?'}
                   </div>
                   <div className="flex-1 bg-gray-800 p-3 rounded-lg">
                     <div className="flex justify-between items-center">
@@ -389,7 +387,7 @@ export default function PlayPage() {
                         {comment.author ? comment.author.username : '[Deleted User]'}
                       </p>
                       {canDelete && (
-                        <button 
+                        <button
                           onClick={() => handleDeleteSeriesComment(comment._id)}
                           className="text-xs text-gray-500 hover:text-red-400"
                           title="Delete comment"
@@ -414,13 +412,13 @@ export default function PlayPage() {
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md border border-gray-700">
             <h3 className="text-lg font-semibold text-white mb-4">รายงานปัญหา (Report)</h3>
-            
+
             <form onSubmit={handleReportSubmit}>
-              
-              {/* 💥 NEW: ช่องใส่ชื่อเรื่อง (แยกออกมา) */}
+
+              {/* ช่องใส่ชื่อเรื่อง (แยกออกมา) */}
               <div className="mb-4">
                 <label className="text-sm text-gray-300 mb-1 block">ชื่อเรื่อง (Series Title) <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   type="text"
                   value={reportSeriesInput}
                   onChange={(e) => setReportSeriesInput(e.target.value)}
@@ -430,10 +428,10 @@ export default function PlayPage() {
                 />
               </div>
 
-              {/* 💥 NEW: ช่องใส่ชื่อตอน (แยกออกมา) */}
+              {/* ช่องใส่ชื่อตอน (แยกออกมา) */}
               <div className="mb-4">
                 <label className="text-sm text-gray-300 mb-1 block">ชื่อตอน (Episode Title) <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   type="text"
                   value={reportEpisodeInput}
                   onChange={(e) => setReportEpisodeInput(e.target.value)}
@@ -446,7 +444,7 @@ export default function PlayPage() {
               {/* ช่องใส่ชื่อผู้เขียน */}
               <div className="mb-4">
                 <label className="text-sm text-gray-300 mb-1 block">ชื่อผู้เขียน <span className="text-red-500">*</span></label>
-                <input 
+                <input
                   type="text"
                   value={reportAuthorInput}
                   onChange={(e) => setReportAuthorInput(e.target.value)}
@@ -458,8 +456,8 @@ export default function PlayPage() {
 
               <div className="mb-4">
                 <label className="text-sm text-gray-300 mb-1 block">เหตุผล <span className="text-red-500">*</span></label>
-                <select 
-                  value={reportReason} 
+                <select
+                  value={reportReason}
                   onChange={(e) => setReportReason(e.target.value)}
                   className="mt-1 w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded text-white focus:outline-none focus:border-primary"
                 >
@@ -482,9 +480,9 @@ export default function PlayPage() {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button 
-                  type="button" 
-                  onClick={() => setShowReportModal(false)} 
+                <button
+                  type="button"
+                  onClick={() => setShowReportModal(false)}
                   className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
                 >
                   ยกเลิก
