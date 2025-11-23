@@ -1,8 +1,12 @@
-// db.js (ES Module)
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
+    // ตรวจสอบว่ามี MONGO_URI หรือไม่
+     if (!process.env.MONGO_URI) {
+            throw new Error('MONGO_URI is not defined in .env');
+        }
+
     // ตรวจสอบว่า MONGO_URI ถูกโหลดใน server.js ก่อนแล้ว
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
@@ -12,4 +16,4 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB; // ใช้ export default
+export default connectDB;

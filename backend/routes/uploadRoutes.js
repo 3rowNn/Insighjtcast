@@ -1,9 +1,8 @@
-// routes/upload.js
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { protect } from '../middleware/authmiddleware.js';
+import { protect } from '../middleware/authmiddleware.js'; // 🛠️ FIX: แก้ชื่อไฟล์ให้ถูกต้อง
 
 const router = express.Router();
 
@@ -34,7 +33,61 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB
 });
 
-// Route POST /api/upload
+/**
+ * @swagger
+ * tags:
+ * - name: Upload
+ * description: อัปโหลดไฟล์รูปภาพ
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Upload
+ *     description: อัปโหลดไฟล์รูปภาพ
+ */
+
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     summary: อัปโหลดรูปภาพ
+ *     description: อัปโหลดรูปภาพเพื่อใช้ในเนื้อหา (รองรับ jpg, jpeg, png, webp ขนาดไม่เกิน 5MB)
+ *     tags: [Upload]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: ไฟล์รูปภาพที่ต้องการอัปโหลด
+ *     responses:
+ *       200:
+ *         description: อัปโหลดสำเร็จ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Image uploaded successfully
+ *                 url:
+ *                   type: string
+ *                   description: URL ของรูปภาพที่อัปโหลด
+ *                   example: http://localhost:5000/uploads/image-123456789.jpg
+ *       400:
+ *         description: ไม่ได้แนบไฟล์ หรือประเภทไฟล์ไม่ถูกต้อง
+ *       401:
+ *         description: ไม่ได้รับอนุญาต (Token ไม่ถูกต้อง)
+ */
+
 router.post('/', protect, upload.single('image'), (req, res) => {
   if (req.file) {
     // สร้าง Base URL อัตโนมัติตาม Server ที่รันอยู่
